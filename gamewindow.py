@@ -167,7 +167,7 @@ class GameWindow:
 		self.mouse.click(x, y)
 		sleep(0.3)
 
-	def clickmonster(times):
+	def clickmonster(self, times):
 		print 'clicking monster ...'
 		for i in range(times):
 			sleep(0.01)

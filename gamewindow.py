@@ -102,9 +102,9 @@ class GameWindow:
 			return (None, None)
 
 	def findheroimg(self, small):
-		(x, y) = self.findimg(small, self.winx + 5, self.winy + 171, 535, 460)
+		(x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 460)
 		if x != None:
-			return (x + 5, y + 171)
+			return (x + 5, y + 160)
 		return (None, None)
 
 	def findvisibleheroname(self, hero):
@@ -121,12 +121,12 @@ class GameWindow:
 	
 		self.scrolltop()
 		for i in range(scrollPages):
-			self.scrollpagedown()
 			x, y = self.findvisibleheroname(hero)
 			if x != None:
 				print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
 				return (x, y)
 				break
+			self.scrollpagedown()
 
 		return (None, None)
 

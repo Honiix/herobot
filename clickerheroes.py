@@ -36,7 +36,7 @@ class Heroes:
 				h = Hero(tok[0], float(tok[1]), float(tok[2]))
 				self.heroes.append(h)
 
-	def getheroto(self):
+	def getbutlastvisiblehero(self):
 		print 'searching for last visible hero...'
 		self.window.scrollbottom()
 		onefound = False

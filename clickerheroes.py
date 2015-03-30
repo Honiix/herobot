@@ -37,10 +37,10 @@ class Heroes:
 				self.heroes.append(h)
 
 	def getbutlastvisiblehero(self):
-		w.scrollbottom()
+		self.window.scrollbottom()
 		onefound = False
 		for i in reversed(range(25)):
-			h = w.findvisiblehero(h.heroes[i])
+			h = self.window.findvisiblehero(h.heroes[i])
 			if h.x != None:
 				if onefound:
 					return h

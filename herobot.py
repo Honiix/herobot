@@ -21,6 +21,7 @@ sleep(1)
 # cid = w.findhero(h.heroes[h.CID])
 # print str(cid.x)
 # h.upgradeall200()
+# w.useskills()
 
 while True:
 	state = watch.readState()
@@ -51,6 +52,8 @@ while True:
 			frost = w.findhero(h.heroes[h.FROST])
 			w.levelup100(frost)
 			state = watch.readState()
+			w.useskills()
+
 
 	# ascend
 	if state.level >= 1001:

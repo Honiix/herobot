@@ -66,11 +66,11 @@ class GameWindow:
 
 	def scrolltop(self):
 		self.click(self.herosScrollUpLocation, 7 * scrollPages)
-		sleep(0.4)
+		sleep(1)
 
 	def scrollbottom(self):
 		self.click(self.herosScrollDownLocation, 7 * scrollPages)
-		sleep(0.4)
+		sleep(1)
 
 	def scrollpageup(self):
 		self.click(self.herosScrollUpLocation, 7)

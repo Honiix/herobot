@@ -37,10 +37,10 @@ while True:
 			w.checkprog()
 
 
+	h.upgradeall200()
+
 	# now go with frostleaf
 	if state.level >= 140:
-		# upgrade all heroes
-		h.upgradeall200()
 
 		while state.level < 1001:
 			w.clickmonster(500)

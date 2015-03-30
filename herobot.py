@@ -60,3 +60,6 @@ while True:
 		amen = w.findhero(h.heroes[h.AMEN])
 		w.upgrade(amen, 3)
 		w.ascendConfirm()
+
+		# wait for state update
+		sleep (3)

@@ -54,12 +54,12 @@ class Heroes:
 
 	def upgradeall200(self):
 		for i in range(25):
-			visibleHero = w.findhero(self.heroes[i])
-			w.levelup100(visibleHero)
-			w.levelup100(visibleHero)
+			visibleHero = self.window.findhero(self.heroes[i])
+			self.window.levelup100(visibleHero)
+			self.window.levelup100(visibleHero)
 			if i != self.AMEN:
 				for j in range(7):
-					w.upgrade(visibleHero, j)
+					self.window.upgrade(visibleHero, j)
 			else:
 				for j in range(3):
-					w.upgrade(visibleHero, j)
+					self.window.upgrade(visibleHero, j)

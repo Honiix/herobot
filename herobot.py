@@ -26,7 +26,6 @@ while True:
 		w.levelup100(cid)
 		for i in range(7):
 			w.upgrade(cid, i)
-
 		w.checkprog()
 
 	if state.level > 1 and state.level < 140:
@@ -35,6 +34,7 @@ while True:
 			hero = h.getbutlastvisiblehero()
 			w.levelup100(hero)
 			state = watch.readState()
+			w.checkprog()
 
 
 	# now go with frostleaf

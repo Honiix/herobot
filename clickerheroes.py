@@ -40,7 +40,7 @@ class Heroes:
 		self.window.scrollbottom()
 		onefound = False
 		for i in reversed(range(25)):
-			h = self.window.findvisiblehero(h.heroes[i])
+			h = self.window.findvisiblehero(self.heroes[i])
 			if h.x != None:
 				if onefound:
 					return h

@@ -29,6 +29,7 @@ while True:
 
 		w.checkprog()
 
+	if state.level > 1 and state.level < 140:
 		while state.level < 140:
 			w.clickmonster(500)
 			hero = h.getbutlastvisiblehero()

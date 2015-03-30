@@ -136,18 +136,20 @@ class GameWindow:
 
 
 	def findhero(self, hero):
+		print 'searching for ' + hero.name + '...'
 		x, y = self.findheroname(hero)
+		print 'found at: ' + str(x) + ' ' + str(y)
 		return VisibleHero(x, y)
 
 	def levelup100(self, visibleHero):
 		x,y = visibleHero.gethirelocation(self.winx, self.winy)
 		self.keyboard.press_key(self.keyboard.control_key)		
-		self.mouse.slowclick(x, y)
+		self.slowclick(x, y)
 		self.keyboard.release_key(self.keyboard.control_key)
 
 	def upgrade(self, visibleHero, index):
 		x,y = visibleHero.getupgradelocation(self.winx, self.winy, index)
-		self.mouse.slowclick(x, y)
+		self.slowclick(x, y)
 
 
 	def checkprog(self):
@@ -155,13 +157,13 @@ class GameWindow:
 		if x == None and y == None:
 			return
 		else:
-			self.mouse.slowclick(self.winx+1111, self.winy+211)
+			self.slowclick(self.winx+1111, self.winy+211)
 
 	def ascendConfirm(self):
-		slowclick(self.winx + 490, self.winy + 420)
+		self.slowclick(self.winx + 490, self.winy + 420)
 
 	def slowclick(self, x, y):
-		sleep(0.01)
+		sleep(0.1)
 		self.mouse.click(x, y)
 
 	def clickmonster(times):

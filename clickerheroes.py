@@ -37,15 +37,20 @@ class Heroes:
 				self.heroes.append(h)
 
 	def getbutlastvisiblehero(self):
+		print 'searching for last visible hero...'
 		self.window.scrollbottom()
 		onefound = False
-		for i in reversed(range(25)):
+		for i in reversed(range(25)):			
 			h = self.window.findvisiblehero(self.heroes[i])
-			if h.x != None:
+			if h.x != None:				
 				if onefound:
+					print self.heroes[i].name + ' is last available... '
 					return h
 				else:
+					print self.heroes[i].name + ' visible. searching for next... '
 					onefound = True
+			else:
+				print self.heroes[i].name + ' not visible '
 
 	def upgradeall200(self):
 		for i in range(25):

@@ -66,19 +66,19 @@ class GameWindow:
 
 	def scrolltop(self):
 		self.click(self.herosScrollUpLocation, 6 * scrollPages)
-		sleep(0.2)
+		sleep(0.4)
 
 	def scrollbottom(self):
 		self.click(self.herosScrollDownLocation, 6 * scrollPages)
-		sleep(0.2)
+		sleep(0.4)
 
 	def scrollpageup(self):
 		self.click(self.herosScrollUpLocation, 6)
-		sleep(0.2)
+		sleep(0.4)
 
 	def scrollpagedown(self):
 		self.click(self.herosScrollDownLocation, 6)
-		sleep(0.2)
+		sleep(0.4)
 
 
 	def findimg(self, small, x, y, w, h):

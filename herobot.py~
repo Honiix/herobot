@@ -46,7 +46,7 @@ while True:
 			state = watch.readState()
 
 	# ascend
-	if state.level >= 1001:
+	if state.level >= 1001
 		amen = w.findhero(h.heroes[h.AMEN])
 		w.upgrade(amen, 3)
 		w.ascendConfirm()

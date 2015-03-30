@@ -55,6 +55,6 @@ class Heroes:
 			if i != self.AMEN:
 				for j in range(7):
 					w.upgrade(visibleHero, j)
-			else:
+			else
 				for j in range(3):
 					w.upgrade(visibleHero, j)

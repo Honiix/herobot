@@ -169,7 +169,7 @@ class GameWindow:
 		for i in range(times):
 			sleep(0.01)
 			self.mouse.click(self.winx + 580, self.winy + 120)
-			self.suspendCallback()
+			self.suspendCallback
 
 
 

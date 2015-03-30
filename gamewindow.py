@@ -65,20 +65,20 @@ class GameWindow:
 			sleep(0.02)
 
 	def scrolltop(self):
-		self.click(self.herosScrollUpLocation, 7 * scrollPages)
-		sleep(1)
+		self.click(self.herosScrollUpLocation, 6 * scrollPages)
+		sleep(0.2)
 
 	def scrollbottom(self):
-		self.click(self.herosScrollDownLocation, 7 * scrollPages)
-		sleep(1)
+		self.click(self.herosScrollDownLocation, 6 * scrollPages)
+		sleep(0.2)
 
 	def scrollpageup(self):
-		self.click(self.herosScrollUpLocation, 7)
-		sleep(0.4)
+		self.click(self.herosScrollUpLocation, 6)
+		sleep(0.2)
 
 	def scrollpagedown(self):
-		self.click(self.herosScrollDownLocation, 7)
-		sleep(0.4)
+		self.click(self.herosScrollDownLocation, 6)
+		sleep(0.2)
 
 
 	def findimg(self, small, x, y, w, h):
@@ -102,7 +102,7 @@ class GameWindow:
 			return (None, None)
 
 	def findheroimg(self, small):
-		(x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 460)
+		(x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 410)
 		if x != None:
 			return (x + 5, y + 160)
 		return (None, None)
@@ -113,13 +113,15 @@ class GameWindow:
 			x, y = self.findheroimg(hero.goldimg)
 		return (x, y)
 
-	def findheroname(self, hero):
+	def findheroname(self, hero, scrolldownfirst = False):
 		x, y = self.findvisibleheroname(hero)
 		if x != None:
 			print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
 			return (x, y)
-	
-		self.scrolltop()
+		
+		if not scrolldownfirst:
+			self.scrolltop()
+		
 		for i in range(scrollPages):
 			x, y = self.findvisibleheroname(hero)
 			if x != None:
@@ -128,6 +130,18 @@ class GameWindow:
 				break
 			self.scrollpagedown()
 
+		# make another pass from the top...
+		if scrolldownfirst:
+			self.scrolltop()
+		
+			for i in range(scrollPages):
+				x, y = self.findvisibleheroname(hero)
+				if x != None:
+					print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
+					return (x, y)
+					break
+				self.scrollpagedown()
+
 		return (None, None)
 
 	def findvisiblehero(self, hero):
@@ -135,9 +149,9 @@ class GameWindow:
 		return VisibleHero(x, y)
 
 
-	def findhero(self, hero):
+	def findhero(self, hero, scrolldownfirst = False):
 		print 'searching for ' + hero.name + '...'
-		x, y = self.findheroname(hero)
+		x, y = self.findheroname(hero, scrolldownfirst)
 		print 'found at: ' + str(x) + ' ' + str(y)
 		return VisibleHero(x, y)
 
@@ -163,9 +177,9 @@ class GameWindow:
 		self.slowclick(self.winx + 490, self.winy + 420)
 
 	def slowclick(self, x, y):
-		sleep(0.3)
+		sleep(0.15)
 		self.mouse.click(x, y)
-		sleep(0.3)
+		sleep(0.15)
 
 	def clickmonster(self, times):
 		print 'clicking monster ...'

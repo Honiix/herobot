@@ -53,8 +53,8 @@ class Heroes:
 				print self.heroes[i].name + ' not visible '
 
 	def upgradeall200(self):
-		for i in range(25):
-			visibleHero = self.window.findhero(self.heroes[i])
+		for i in range(26):
+			visibleHero = self.window.findhero(self.heroes[i], scrolldownfirst=True)
 			self.window.levelup100(visibleHero)
 			self.window.levelup100(visibleHero)
 			if i != self.AMEN:

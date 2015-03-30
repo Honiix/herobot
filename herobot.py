@@ -8,7 +8,7 @@ from display import *
 from time import *
 from enum import Enum
 
-sleep 1
+sleep(1)
 
 hh = SuspendHelper()
 w = GameWindow(hh.process)
@@ -25,7 +25,7 @@ while True:
 		w.levelup100(cid)
 		w.levelup100(cid)
 		for i in range(7):
-			w.upgrade(cid)
+			w.upgrade(cid, i)
 
 		w.checkprog()
 

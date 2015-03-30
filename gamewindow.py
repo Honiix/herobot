@@ -143,7 +143,7 @@ class GameWindow:
 
 	def levelup100(self, visibleHero):
 		x,y = visibleHero.gethirelocation(self.winx, self.winy)
-		self.keyboard.press_key(self.keyboard.control_key)		
+		self.keyboard.press_key(self.keyboard.control_key)
 		self.slowclick(x, y)
 		self.keyboard.release_key(self.keyboard.control_key)
 
@@ -163,8 +163,9 @@ class GameWindow:
 		self.slowclick(self.winx + 490, self.winy + 420)
 
 	def slowclick(self, x, y):
-		sleep(0.1)
+		sleep(0.3)
 		self.mouse.click(x, y)
+		sleep(0.3)
 
 	def clickmonster(times):
 		print 'clicking monster ...'

@@ -184,7 +184,7 @@ class GameWindow:
 	def clickmonster(self, times):
 		print 'clicking monster ...'
 		for i in range(times):
-			sleep(0.01)
+			sleep(0.018)
 			self.mouse.click(self.winx + 580, self.winy + 120)
 			self.suspendCallback()
 

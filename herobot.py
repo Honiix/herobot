@@ -42,10 +42,10 @@ while True:
 			w.checkprog()
 
 
-	h.upgradeall200()
 
-	# now go with frostleaf
+	# now go with samurai
 	if state.level >= 140:
+		h.upgradeall200()
 
 		while state.level < 1401:
 			w.clickmonster(1000)
@@ -53,6 +53,7 @@ while True:
 			w.levelup100(samurai)
 			state = watch.readState()
 			w.useskills()
+			w.checkprog()
 
 
 	# ascend

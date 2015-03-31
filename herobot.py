@@ -44,7 +44,7 @@ while True:
 
 
 	# now go with samurai
-	if state.level >= 140:
+	if state.level >= 140 and state.level < 1401:
 		h.upgradeall200()
 
 		while state.level < 1401:

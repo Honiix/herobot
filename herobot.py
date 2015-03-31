@@ -63,4 +63,4 @@ while True:
 		w.ascendConfirm()
 
 		# wait for state update
-		sleep (3)
+		sleep (5)

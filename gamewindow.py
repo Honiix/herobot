@@ -8,6 +8,7 @@ import numpy as np
 from time import *
 
 scrollPages = 10
+pageScrollClicks = 5
 
 class VisibleHero:
 	def __init__(self, x, y):
@@ -65,19 +66,19 @@ class GameWindow:
 			sleep(0.02)
 
 	def scrolltop(self):
-		self.click(self.herosScrollUpLocation, 6 * scrollPages)
+		self.click(self.herosScrollUpLocation, pageScrollClicks * scrollPages)
 		sleep(0.4)
 
 	def scrollbottom(self):
-		self.click(self.herosScrollDownLocation, 6 * scrollPages)
+		self.click(self.herosScrollDownLocation, pageScrollClicks * scrollPages)
 		sleep(0.4)
 
 	def scrollpageup(self):
-		self.click(self.herosScrollUpLocation, 6)
+		self.click(self.herosScrollUpLocation, pageScrollClicks)
 		sleep(0.4)
 
 	def scrollpagedown(self):
-		self.click(self.herosScrollDownLocation, 6)
+		self.click(self.herosScrollDownLocation, pageScrollClicks)
 		sleep(0.4)
 
 

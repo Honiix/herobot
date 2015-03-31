@@ -47,16 +47,16 @@ while True:
 	# now go with frostleaf
 	if state.level >= 140:
 
-		while state.level < 1001:
-			w.clickmonster(500)
-			frost = w.findhero(h.heroes[h.FROST])
-			w.levelup100(frost)
+		while state.level < 1401:
+			w.clickmonster(1000)
+			samurai = w.findhero(h.heroes[h.SAMURAI])
+			w.levelup100(samurai)
 			state = watch.readState()
 			w.useskills()
 
 
 	# ascend
-	if state.level >= 1001:
+	if state.level >= 1401:
 		amen = w.findhero(h.heroes[h.AMEN])
 		w.upgrade(amen, 3)
 		w.ascendConfirm()

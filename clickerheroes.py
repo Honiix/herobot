@@ -21,6 +21,7 @@ class Heroes:
 		self.loadheroes()
 		self.CID=0
 		self.BETTY=5
+		self.SAMURAI=6
 		self.NATALIA=10
 		self.MIDAS=15
 		self.AMEN=19

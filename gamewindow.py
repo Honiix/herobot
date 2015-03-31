@@ -191,7 +191,9 @@ class GameWindow:
 	def useskills(self):
 		self.keyboard.tap_key('1')
 		self.keyboard.tap_key('2')
+		self.keyboard.tap_key('8')
 		self.keyboard.tap_key('3')
+		self.keyboard.tap_key('9')
 		self.keyboard.tap_key('4')
 		self.keyboard.tap_key('5')
 		self.keyboard.tap_key('6')

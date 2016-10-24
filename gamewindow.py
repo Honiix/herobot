@@ -44,7 +44,7 @@ class GameWindow:
 		y, x = np.unravel_index(r.argmax(), r.shape)
 		self.winx = x - 14
 		self.winy = y - 86
-		print 'window found at ' + str(self.winx) + '; ' + str(self.winy)
+		print('window found at ' + str(self.winx) + '; ' + str(self.winy))
 		# self.hwinx = self.winx + 11
 		# self.hwiny = self.winy + 171
 
@@ -92,7 +92,7 @@ class GameWindow:
 				r = cv2.matchTemplate(small, big, self.cvmethod)
 				break
 			except:
-				print "Warning: failed to grab image"
+				print("Warning: failed to grab image")
 				continue
 
 		y, x = np.unravel_index(r.argmax(), r.shape)
@@ -117,7 +117,7 @@ class GameWindow:
 	def findheroname(self, hero, scrolldownfirst = False):
 		x, y = self.findvisibleheroname(hero)
 		if x != None:
-			print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
+			print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
 			return (x, y)
 		
 		if not scrolldownfirst:
@@ -126,7 +126,7 @@ class GameWindow:
 		for i in range(scrollPages):
 			x, y = self.findvisibleheroname(hero)
 			if x != None:
-				print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
+				print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
 				return (x, y)
 				break
 			self.scrollpagedown()
@@ -138,7 +138,7 @@ class GameWindow:
 			for i in range(scrollPages):
 				x, y = self.findvisibleheroname(hero)
 				if x != None:
-					print 'found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y)
+					print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
 					return (x, y)
 					break
 				self.scrollpagedown()
@@ -151,9 +151,9 @@ class GameWindow:
 
 
 	def findhero(self, hero, scrolldownfirst = False):
-		print 'searching for ' + hero.name + '...'
+		print('searching for ' + hero.name + '...')
 		x, y = self.findheroname(hero, scrolldownfirst)
-		print 'found at: ' + str(x) + ' ' + str(y)
+		print('found at: ' + str(x) + ' ' + str(y))
 		return VisibleHero(x, y)
 
 	def levelup100(self, visibleHero):
@@ -183,7 +183,7 @@ class GameWindow:
 		sleep(0.15)
 
 	def clickmonster(self, times):
-		print 'clicking monster ...'
+		print('clicking monster ...')
 		for i in range(times):
 			sleep(0.018)
 			self.mouse.click(self.winx + 580, self.winy + 120)

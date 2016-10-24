@@ -28,7 +28,7 @@ class GameStateWatcher:
 
 	def getlevel(self):
 		raw = self.window.grabocr(697, 81, 260, 32)
-		# print 'read: ' + raw
+		# print('read: ' + raw)
 		num = ''.join(ch for ch in raw if ch.isdigit())
 		try:
 			return int(num)
@@ -37,7 +37,7 @@ class GameStateWatcher:
 
 	def getmoney(self):
 		raw = self.window.grabocr(100, 18, 400, 42)
-		# print 'read: ' + raw
+		# print('read: ' + raw)
 		raw = raw.replace(' ', '')
 		try:
 			val = float(raw)
@@ -47,7 +47,7 @@ class GameStateWatcher:
 
 	def getsoulscurrent(self):
 		raw = self.window.grabocr(363, 130, 190, 20)
-		# print 'read: ' + raw
+		# print('read: ' + raw)
 		num = ''.join(ch for ch in raw if ch.isdigit())
 		try:
 			return int(num)
@@ -56,7 +56,7 @@ class GameStateWatcher:
 
 	def getsoulsnext(self):
 		raw = self.window.grabocr(363, 150, 190, 20)
-		# print 'read: ' + raw
+		# print('read: ' + raw)
 		num = ''.join(ch for ch in raw if ch.isdigit())
 		try:
 			return int(num)

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from time import *
 from datetime import datetime
-import cv2, os
+import os
+import cv2
 from cv2 import cv
 import pytesseract
 
@@ -38,20 +39,20 @@ class Heroes:
 				self.heroes.append(h)
 
 	def getbutlastvisiblehero(self):
-		print 'searching for last visible hero...'
+		print('searching for last visible hero...')
 		self.window.scrollbottom()
 		onefound = False
 		for i in reversed(range(27)):			
 			h = self.window.findvisiblehero(self.heroes[i])
 			if h.x != None:				
 				if onefound:
-					print self.heroes[i].name + ' is last available... '
+					print(self.heroes[i].name + ' is last available... ')
 					return h
 				else:
-					print self.heroes[i].name + ' visible. searching for next... '
+					print(self.heroes[i].name + ' visible. searching for next... ')
 					onefound = True
 			else:
-				print self.heroes[i].name + ' not visible '
+				print(self.heroes[i].name + ' not visible ')
 
 	def upgradeall200(self):
 		for i in range(26):

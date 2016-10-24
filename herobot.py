@@ -19,7 +19,7 @@ watch = GameStateWatcher(w)
 sleep(1)
 
 # cid = w.findhero(h.heroes[h.CID])
-# print str(cid.x)
+# print(str(cid.x))
 # h.upgradeall200()
 # w.useskills()
 

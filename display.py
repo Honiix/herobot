@@ -20,7 +20,7 @@ class SuspendHelper:
         self.root = self.disp.screen().root
         self.state = SuspendState.Running
 
-        print 'starting event listen thread...'
+        print('starting event listen thread...')
         t = threading.Thread(target=self.listenThread)
         t.daemon = True
         t.start()
@@ -58,7 +58,7 @@ class SuspendHelper:
                 self.suspendQueue.put(event)
 
     def handle_event(self, event):
-        print event.detail
+        print(event.detail)
 
     def process(self):
 
@@ -66,10 +66,10 @@ class SuspendHelper:
             self.suspendQueue.get()
             if self.state == SuspendState.Suspend:
                 self.state = SuspendState.Running
-                print 'resuming...'
+                print('resuming...')
             else:
                 self.state = SuspendState.Suspend
-                print 'suspended...'
+                print('suspended...')
 
 
         if self.state == SuspendState.Suspend:

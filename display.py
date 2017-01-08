@@ -10,9 +10,11 @@ import threading
 import Queue
 from time import *
 
+
 class SuspendState(Enum):
     Suspend = 0
     Running = 1
+
 
 class SuspendHelper:
     def __init__(self):
@@ -27,25 +29,23 @@ class SuspendHelper:
 
         self.suspendQueue = Queue.Queue()
 
-
     def listenThread(self):
         self.ctx = self.disp.record_create_context(
-                    0,
-                    [record.AllClients],
-                    [{
-                            'core_requests': (0, 0),
-                            'core_replies': (0, 0),
-                            'ext_requests': (0, 0, 0, 0),
-                            'ext_replies': (0, 0, 0, 0),
-                            'delivered_events': (0, 0),
-                            'device_events': (X.KeyReleaseMask, X.ButtonReleaseMask),
-                            'errors': (0, 0),
-                            'client_started': False,
-                            'client_died': False,
-                    }])
+            0,
+            [record.AllClients],
+            [{
+                'core_requests': (0, 0),
+                'core_replies': (0, 0),
+                'ext_requests': (0, 0, 0, 0),
+                'ext_replies': (0, 0, 0, 0),
+                'delivered_events': (0, 0),
+                'device_events': (X.KeyReleaseMask, X.ButtonReleaseMask),
+                'errors': (0, 0),
+                'client_started': False,
+                'client_died': False,
+            }])
         self.disp.record_enable_context(self.ctx, self.handler)
         self.disp.record_free_context(self.ctx)
-
 
     def handler(self, reply):
         """ This function is called when a xlib event is fired """
@@ -70,7 +70,6 @@ class SuspendHelper:
             else:
                 self.state = SuspendState.Suspend
                 print('suspended...')
-
 
         if self.state == SuspendState.Suspend:
             # wait until resumed

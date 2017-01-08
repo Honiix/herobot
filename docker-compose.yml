@@ -1,0 +1,8 @@
+version: '2'
+services:
+   my-python:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/code

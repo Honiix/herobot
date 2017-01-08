@@ -7,7 +7,7 @@ from Xlib.ext import record
 from Xlib.protocol import rq
 
 import threading
-import Queue
+from queuelib import queue
 from time import *
 
 
@@ -27,7 +27,7 @@ class SuspendHelper:
         t.daemon = True
         t.start()
 
-        self.suspendQueue = Queue.Queue()
+        self.suspendQueue = queue.Queue()
 
     def listenThread(self):
         self.ctx = self.disp.record_create_context(

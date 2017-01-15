@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from enum import Enum
 
 from Xlib.display import Display
@@ -7,7 +7,7 @@ from Xlib.ext import record
 from Xlib.protocol import rq
 
 import threading
-from queuelib import queue
+import queue
 from time import *
 
 

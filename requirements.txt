@@ -1,0 +1,8 @@
+Pillow
+PyUserInput
+pyscreenshot
+pytesseract
+Desktopmagic
+numpy
+opencv-python
+unix

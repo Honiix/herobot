@@ -5,6 +5,7 @@
 import cv2
 # from cv2 import cv
 # import pytesseract
+import logging
 
 
 class Hero:
@@ -30,6 +31,7 @@ class Heroes:
         self.AMEN = 19
         self.SHINO = 23
         self.FROST = 25
+        self.logger = logging.getLogger('herobot.clickerheroes')
 
     def loadheroes(self):
         with open('heroes.txt', 'r') as f:
@@ -41,29 +43,32 @@ class Heroes:
                 self.heroes.append(h)
 
     def getbutlastvisiblehero(self):
-        print('searching for last visible hero...')
+        self.logger.info('searching for last visible hero...')
         self.window.scrollbottom()
         onefound = False
         for i in reversed(range(27)):
             h = self.window.findvisiblehero(self.heroes[i])
             if h.x is not None:
                 if onefound:
-                    print(self.heroes[i].name + ' is last available... ')
+                    self.logger.info('%s is last available... ' % self.heroes[i].name)
                     return h
                 else:
-                    print(self.heroes[i].name + ' visible. searching for next... ')
+                    self.logger.info('%s visible. searching for next... ' % self.heroes[i].name)
                     onefound = True
             else:
-                print(self.heroes[i].name + ' not visible ')
+                self.logger.info('%s not visible' % self.heroes[i].name)
 
     def upgradeall200(self):
         for i in range(26):
             visibleHero = self.window.findhero(self.heroes[i], scrolldownfirst=True)
-            self.window.levelup100(visibleHero)
-            self.window.levelup100(visibleHero)
-            if i != self.AMEN:
-                for j in range(7):
-                    self.window.upgrade(visibleHero, j)
+            if visibleHero is not None:
+                self.window.levelup100(visibleHero)
+                self.window.levelup100(visibleHero)
+                if i != self.AMEN:
+                    for j in range(7):
+                        self.window.upgrade(visibleHero, j)
+                else:
+                    for j in range(3):
+                        self.window.upgrade(visibleHero, j)
             else:
-                for j in range(3):
-                    self.window.upgrade(visibleHero, j)
+                self.logger.info('Couldn\'t upgrade %s' % visibleHero)

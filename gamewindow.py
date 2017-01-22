@@ -6,6 +6,8 @@ from pymouse import PyMouse
 from pykeyboard import PyKeyboard
 import numpy as np
 from time import *
+from timeit import timing
+import logging
 
 scrollPages = 10
 pageScrollClicks = 5
@@ -36,6 +38,7 @@ class GameWindow:
         self.getwindow()
         self.herosScrollUpLocation = (549, 190)
         self.herosScrollDownLocation = (549, 623)
+        self.logger = logging.getLogger('herobot.gamewindow')
 
     def getwindow(self):
         im = ImageGrab.grab().convert('RGB')
@@ -49,6 +52,7 @@ class GameWindow:
         # self.hwinx = self.winx + 11
         # self.hwiny = self.winy + 171
 
+    @timing
     def grabocr(self, x, y, w, h):
         x = self.winx + x
         y = self.winy + y
@@ -82,10 +86,12 @@ class GameWindow:
         self.click(self.herosScrollDownLocation, pageScrollClicks)
         sleep(0.4)
 
+    @timing
     def findimg(self, small, x, y, w, h):
         im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
         big = np.array(im)
-        big = big[:, :, ::-1].copy()
+        # print(big.shape)
+        # big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
 
         while True:
             try:
@@ -150,10 +156,13 @@ class GameWindow:
         return VisibleHero(x, y)
 
     def findhero(self, hero, scrolldownfirst=False):
-        print('searching for ' + hero.name + '...')
+        self.logger.info('searching for %s ...' % hero.name)
         x, y = self.findheroname(hero, scrolldownfirst)
-        print('found at: ' + str(x) + ' ' + str(y))
-        return VisibleHero(x, y)
+        self.logger.info('found at: %s %s' % (str(x), str(y)))
+        if x is not None:
+            return VisibleHero(x, y)
+        else:
+            return None
 
     def levelup100(self, visibleHero):
         x, y = visibleHero.gethirelocation(self.winx, self.winy)
@@ -181,10 +190,10 @@ class GameWindow:
         sleep(0.15)
 
     def clickmonster(self, times):
-        print('clicking monster ...')
+        self.logger.info('clicking monster ...')
         for i in range(times):
-            sleep(0.018)
-            self.mouse.click(self.winx + 580, self.winy + 120)
+            sleep(0.025)
+            self.mouse.click(self.winx + 700, self.winy + 250)
             self.suspendCallback()
 
     def useskills(self):

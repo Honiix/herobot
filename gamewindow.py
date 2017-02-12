@@ -95,9 +95,9 @@ class GameWindow:
     def findimg(self, small, x, y, w, h):
         im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
         big = np.array(im)
-        self.logger.debug('big shape: {}'.format(big.shape))
 
         # Debug output
+        # self.logger.debug('big shape: {}'.format(big.shape))
         cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))  # must recompile CV2 with CTK or Carbon support
 
         big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array

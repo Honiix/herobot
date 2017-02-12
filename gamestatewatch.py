@@ -32,7 +32,7 @@ class GameStateWatcher:
             sleep(2)
 
     def getlevel(self):
-        raw = self.window.grabocr(697, 81, 260, 32)
+        raw = self.window.grabocr(882, 81, 134, 27)
         self.logger.debug('getlevel read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:

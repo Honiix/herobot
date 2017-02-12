@@ -56,19 +56,18 @@ class GameWindow:
     def grabocr(self, x, y, w, h):
         x = self.winx + x
         y = self.winy + y
-        im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
+        im = ImageGrab.grab(bbox=(x, y, x + w, y + h)).convert('RGB')
 
         # debug output
-        imcolor = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
-        cv2.imwrite('tests/grabocr.bmp', imcolor)
+        # imcolor = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+        # cv2.imwrite('tests/grabocr.bmp', imcolor)
 
         pix = im.load()
         for x in range(im.size[0]):
             for y in range(im.size[1]):
                 if pix[x, y] != (254, 254, 254):
                     pix[x, y] = 0
-        # self.logger.debug('gabocr got: "{}"'.format(pytesseract.image_to_string(im)))
-        return pytesseract.image_to_string(im)
+        return pytesseract.image_to_string(im, lang='eng')
 
     def click(self, location, times):
         x, y = location

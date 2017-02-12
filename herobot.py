@@ -25,7 +25,7 @@ sleep(1)
 
 # cid, _ = w.findhero(h.heroes[h.CID])
 # print(str(cid.x))
-# h.upgradeall200()
+# h.upgradeall200(2)
 # w.useskills()
 
 while True:
@@ -49,13 +49,27 @@ while True:
             if hero is not None:
                 w.levelup100(hero)
                 state = watch.readState()
+                w.useskills()
+                w.checkprog()
+            else:
+                logger.info('Could not find before last hero')
+
+    if state.level >= 100 and state.level < 200:
+        h.upgradeall200(19)
+
+        while state.level < 200:
+            w.clickmonster(500)
+            hero = h.getbutlastvisiblehero()
+            if hero is not None:
+                w.levelup100(hero)
+                state = watch.readState()
                 w.checkprog()
             else:
                 logger.info('Could not find before last hero')
 
     # now go with samurai
-    if state.level >= 100 and state.level < 1401:
-        h.upgradeall200()
+    if state.level >= 200 and state.level < 1401:
+        h.upgradeall200(25)
 
         while state.level < 1401:
             w.clickmonster(1000)

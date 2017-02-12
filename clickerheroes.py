@@ -58,8 +58,8 @@ class Heroes:
             else:
                 self.logger.info('%s not visible' % self.heroes[i].name)
 
-    def upgradeall200(self):
-        for i in range(25):
+    def upgradeall200(self, upto):
+        for i in range(upto):
             visibleHero, level = self.window.findhero(self.heroes[i], scrolldownfirst=True)
             if visibleHero is not None and level < 200:
                 self.window.levelup100(visibleHero)

@@ -192,7 +192,7 @@ class GameWindow:
         self.slowclick(x, y)
 
     def checkprog(self):
-        x, y = self.findimg(self.progimg, self.winx + 1090, self.winy + 223, 60, 60)
+        x, y = self.findimg(self.progimg, self.winx + 1090, self.winy + 223, 46, 60)
         if x is None and y is None:
             self.logger.debug('checkprog not seen OFF auto-progress indicator. Do nothing.')
             return

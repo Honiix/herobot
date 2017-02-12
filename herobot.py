@@ -63,6 +63,7 @@ while True:
             if hero is not None:
                 w.levelup100(hero)
                 state = watch.readState()
+                w.useskills()
                 w.checkprog()
             else:
                 logger.info('Could not find before last hero')

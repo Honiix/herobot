@@ -59,9 +59,9 @@ class Heroes:
                 self.logger.info('%s not visible' % self.heroes[i].name)
 
     def upgradeall200(self):
-        for i in range(26):
-            visibleHero = self.window.findhero(self.heroes[i], scrolldownfirst=True)
-            if visibleHero is not None:
+        for i in range(25):
+            visibleHero, level = self.window.findhero(self.heroes[i], scrolldownfirst=True)
+            if visibleHero is not None and level < 200:
                 self.window.levelup100(visibleHero)
                 self.window.levelup100(visibleHero)
                 if i != self.AMEN:
@@ -71,4 +71,4 @@ class Heroes:
                     for j in range(3):
                         self.window.upgrade(visibleHero, j)
             else:
-                self.logger.info('Couldn\'t upgrade %s' % visibleHero)
+                self.logger.info('Couldn\'t upgrade hero number {}'.format(i))

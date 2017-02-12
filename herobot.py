@@ -23,7 +23,7 @@ watch = GameStateWatcher(w)
 # wait for game state to update
 sleep(1)
 
-# cid = w.findhero(h.heroes[h.CID])
+# cid, _ = w.findhero(h.heroes[h.CID])
 # print(str(cid.x))
 # h.upgradeall200()
 # w.useskills()
@@ -32,8 +32,8 @@ while True:
     state = watch.readState()
     logger.debug('readState level: %s' % state.level)
     if state.level == 1:
-        cid = w.findhero(h.heroes[h.CID])
-        if cid is not None:
+        cid, level = w.findhero(h.heroes[h.CID])
+        if cid is not None and level < 200:
             w.levelup100(cid)
             w.levelup100(cid)
             for i in range(7):
@@ -43,7 +43,7 @@ while True:
             logger.info('Could not find Cid')
 
     if state.level >= 1 and state.level < 100:
-        while state.level < 140:
+        while state.level < 100:
             w.clickmonster(500)
             hero = h.getbutlastvisiblehero()
             if hero is not None:
@@ -59,7 +59,7 @@ while True:
 
         while state.level < 1401:
             w.clickmonster(1000)
-            samurai = w.findhero(h.heroes[h.SAMURAI])
+            samurai, _ = w.findhero(h.heroes[h.SAMURAI])
             if samurai is not None:
                 w.levelup100(samurai)
                 state = watch.readState()
@@ -70,7 +70,7 @@ while True:
 
     # ascend
     if state.level >= 1401:
-        amen = w.findhero(h.heroes[h.AMEN])
+        amen, _ = w.findhero(h.heroes[h.AMEN])
         if amen is not None:
             w.upgrade(amen, 3)
             w.ascendConfirm()

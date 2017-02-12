@@ -98,7 +98,7 @@ class GameWindow:
 
         # Debug output
         # self.logger.debug('big shape: {}'.format(big.shape))
-        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, COLOR_RGB2BGR))
+        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))
 
         big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
 
@@ -118,10 +118,11 @@ class GameWindow:
             return (None, None)
 
     def findheroimg(self, small):
-        # (x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 410)
-        (x, y) = self.findimg(small, self.winx + 160, self.winy + 173, 272, 420)
+        leftmargin = 160
+        topmargin = 173
+        (x, y) = self.findimg(small, self.winx + leftmargin, self.winy + topmargin, 272, 420)
         if x is not None:
-            return (x + 5, y + 160)
+            return (x + leftmargin, y + topmargin)
         return (None, None)
 
     def findvisibleheroname(self, hero):
@@ -133,7 +134,6 @@ class GameWindow:
     def findheroname(self, hero, scrolldownfirst=False):
         x, y = self.findvisibleheroname(hero)
         if x is not None:
-            self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
             return (x, y)
 
         if not scrolldownfirst:
@@ -142,7 +142,6 @@ class GameWindow:
         for i in range(scrollPages):
             x, y = self.findvisibleheroname(hero)
             if x is not None:
-                self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
                 return (x, y)
                 break
             self.scrollpagedown()
@@ -154,12 +153,20 @@ class GameWindow:
             for i in range(scrollPages):
                 x, y = self.findvisibleheroname(hero)
                 if x is not None:
-                    self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
                     return (x, y)
                     break
                 self.scrollpagedown()
 
         return (None, None)
+
+    def findherolevel(self, y):
+        raw = self.grabocr(312, y + 20, 121, 25)
+        self.logger.debug('findherolevel read: "{}"'.format(raw))
+        num = ''.join(ch for ch in raw if ch.isdigit())
+        try:
+            return int(num)
+        except:
+            return 0
 
     def findvisiblehero(self, hero):
         x, y = self.findvisibleheroname(hero)
@@ -168,11 +175,11 @@ class GameWindow:
     def findhero(self, hero, scrolldownfirst=False):
         self.logger.info('searching for %s ...' % hero.name)
         x, y = self.findheroname(hero, scrolldownfirst)
-        self.logger.info('found at: %s %s' % (str(x), str(y)))
+        self.logger.debug('Found {} at {}; {}'.format(hero.name, str(x), str(y)))
         if x is not None:
-            return VisibleHero(x, y)
+            return (VisibleHero(x, y), self.findherolevel(y))
         else:
-            return None
+            return (None, None)
 
     def levelup100(self, visibleHero):
         x, y = visibleHero.gethirelocation(self.winx, self.winy)

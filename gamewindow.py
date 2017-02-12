@@ -47,7 +47,7 @@ class GameWindow:
         r = cv2.matchTemplate(self.startpointer, big, self.cvmethod)
         y, x = np.unravel_index(r.argmax(), r.shape)
         self.winx = x - 14
-        self.winy = y - 86
+        self.winy = y - 92
         self.logger.info('Window found at {}; {}'.format(str(self.winx), str(self.winy)))
         # self.hwinx = self.winx + 11
         # self.hwiny = self.winy + 171
@@ -98,7 +98,7 @@ class GameWindow:
 
         # Debug output
         # self.logger.debug('big shape: {}'.format(big.shape))
-        cv2.imwrite('tests/big.bmp', big)
+        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, COLOR_RGB2BGR))
 
         big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
 
@@ -119,7 +119,7 @@ class GameWindow:
 
     def findheroimg(self, small):
         # (x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 410)
-        (x, y) = self.findimg(small, self.winx + 160, self.winy + 173, 272, 467)
+        (x, y) = self.findimg(small, self.winx + 160, self.winy + 173, 272, 420)
         if x is not None:
             return (x + 5, y + 160)
         return (None, None)

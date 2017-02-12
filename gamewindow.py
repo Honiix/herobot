@@ -98,7 +98,7 @@ class GameWindow:
 
         # Debug output
         # self.logger.debug('big shape: {}'.format(big.shape))
-        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))  # must recompile CV2 with CTK or Carbon support
+        cv2.imwrite('tests/big.bmp', big)
 
         big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
 
@@ -107,7 +107,7 @@ class GameWindow:
                 r = cv2.matchTemplate(small, big, self.cvmethod)
                 break
             except:
-                print("Warning: failed to grab image")
+                self.log.error("Warning: failed to grab image")
                 continue
 
         y, x = np.unravel_index(r.argmax(), r.shape)
@@ -133,7 +133,7 @@ class GameWindow:
     def findheroname(self, hero, scrolldownfirst=False):
         x, y = self.findvisibleheroname(hero)
         if x is not None:
-            print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
+            self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
             return (x, y)
 
         if not scrolldownfirst:
@@ -142,7 +142,7 @@ class GameWindow:
         for i in range(scrollPages):
             x, y = self.findvisibleheroname(hero)
             if x is not None:
-                print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
+                self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
                 return (x, y)
                 break
             self.scrollpagedown()
@@ -154,7 +154,7 @@ class GameWindow:
             for i in range(scrollPages):
                 x, y = self.findvisibleheroname(hero)
                 if x is not None:
-                    print('found ' + hero.name + ' at ' + str(x) + ' ; ' + str(y))
+                    self.logger.debug('Found {} ad {}; {}'.format(hero.name, str(x), str(y)))
                     return (x, y)
                     break
                 self.scrollpagedown()

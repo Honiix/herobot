@@ -25,9 +25,9 @@ class GameStateWatcher:
         while True:
             self.lock.acquire()
             self.state.level = self.getlevel()
-            self.state.money = self.getmoney()
-            self.state.soulscurrent = self.getsoulscurrent()
-            self.state.soulsnext = self.getsoulsnext()
+            # self.state.money = self.getmoney()
+            # self.state.soulscurrent = self.getsoulscurrent()
+            # self.state.soulsnext = self.getsoulsnext()
             self.lock.release()
             sleep(2)
 

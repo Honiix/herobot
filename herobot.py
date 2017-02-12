@@ -42,7 +42,7 @@ while True:
         else:
             logger.info('Could not find Cid')
 
-    if state.level >= 1 and state.level < 140:
+    if state.level >= 1 and state.level < 100:
         while state.level < 140:
             w.clickmonster(500)
             hero = h.getbutlastvisiblehero()
@@ -54,7 +54,7 @@ while True:
                 logger.info('Could not find before last hero')
 
     # now go with samurai
-    if state.level >= 140 and state.level < 1401:
+    if state.level >= 100 and state.level < 1401:
         h.upgradeall200()
 
         while state.level < 1401:

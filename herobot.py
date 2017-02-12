@@ -11,7 +11,7 @@ import logging
 import logging.config
 
 logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('herobot')
+logger = logging.getLogger('root')
 
 sleep(1)
 

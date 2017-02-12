@@ -28,17 +28,17 @@ class VisibleHero:
 class GameWindow:
     def __init__(self, suspendCallback):
         self.suspendCallback = suspendCallback
-        self.wniy = 0
+        self.winy = 0
         self.winx = 0
         self.mouse = PyMouse()
         self.keyboard = PyKeyboard()
         self.cvmethod = cv2.TM_CCOEFF_NORMED
         self.startpointer = cv2.imread('img/start.png')
         self.progimg = cv2.imread('img/prog.png')
+        self.logger = logging.getLogger('herobot.gamewindow')
         self.getwindow()
         self.herosScrollUpLocation = (549, 190)
         self.herosScrollDownLocation = (549, 623)
-        self.logger = logging.getLogger('herobot.gamewindow')
 
     def getwindow(self):
         im = ImageGrab.grab().convert('RGB')
@@ -48,20 +48,26 @@ class GameWindow:
         y, x = np.unravel_index(r.argmax(), r.shape)
         self.winx = x - 14
         self.winy = y - 86
-        print('window found at ' + str(self.winx) + '; ' + str(self.winy))
+        self.logger.info('Window found at {}; {}'.format(str(self.winx), str(self.winy)))
         # self.hwinx = self.winx + 11
         # self.hwiny = self.winy + 171
 
-    @timing
+    # @timing
     def grabocr(self, x, y, w, h):
         x = self.winx + x
         y = self.winy + y
         im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
+
+        # debug output
+        imcolor = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
+        cv2.imwrite('tests/grabocr.bmp', imcolor)
+
         pix = im.load()
         for x in range(im.size[0]):
             for y in range(im.size[1]):
                 if pix[x, y] != (254, 254, 254):
                     pix[x, y] = 0
+        # self.logger.debug('gabocr got: "{}"'.format(pytesseract.image_to_string(im)))
         return pytesseract.image_to_string(im)
 
     def click(self, location, times):
@@ -86,12 +92,16 @@ class GameWindow:
         self.click(self.herosScrollDownLocation, pageScrollClicks)
         sleep(0.4)
 
-    @timing
+    # @timing
     def findimg(self, small, x, y, w, h):
         im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
         big = np.array(im)
-        # print(big.shape)
-        # big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
+        self.logger.debug('big shape: {}'.format(big.shape))
+
+        # Debug output
+        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))  # must recompile CV2 with CTK or Carbon support
+
+        big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
 
         while True:
             try:
@@ -109,7 +119,8 @@ class GameWindow:
             return (None, None)
 
     def findheroimg(self, small):
-        (x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 410)
+        # (x, y) = self.findimg(small, self.winx + 5, self.winy + 160, 535, 410)
+        (x, y) = self.findimg(small, self.winx + 160, self.winy + 173, 272, 467)
         if x is not None:
             return (x + 5, y + 160)
         return (None, None)
@@ -175,11 +186,13 @@ class GameWindow:
         self.slowclick(x, y)
 
     def checkprog(self):
-        x, y = self.findimg(self.progimg, self.winx + 1090, self.winy + 190, 60, 60)
+        x, y = self.findimg(self.progimg, self.winx + 1090, self.winy + 223, 60, 60)
         if x is None and y is None:
+            self.logger.debug('checkprog not seen OFF auto-progress indicator. Do nothing.')
             return
         else:
-            self.slowclick(self.winx + 1111, self.winy + 211)
+            self.logger.debug('checkprog clicked to activate auto-progression')
+            self.slowclick(self.winx + 1115, self.winy + 252)
 
     def ascendConfirm(self):
         self.slowclick(self.winx + 490, self.winy + 420)

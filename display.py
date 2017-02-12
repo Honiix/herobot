@@ -8,6 +8,7 @@ from Xlib.protocol import rq
 
 import threading
 import queue
+import logging
 from time import *
 
 
@@ -22,12 +23,13 @@ class SuspendHelper:
         self.root = self.disp.screen().root
         self.state = SuspendState.Running
 
-        print('starting event listen thread...')
         t = threading.Thread(target=self.listenThread)
         t.daemon = True
         t.start()
 
         self.suspendQueue = queue.Queue()
+        self.logger = logging.getLogger('herobot.display')
+        self.logger.info('starting event listen thread...')
 
     def listenThread(self):
         self.ctx = self.disp.record_create_context(
@@ -66,10 +68,10 @@ class SuspendHelper:
             self.suspendQueue.get()
             if self.state == SuspendState.Suspend:
                 self.state = SuspendState.Running
-                print('resuming...')
+                self.logger.info('resuming...')
             else:
                 self.state = SuspendState.Suspend
-                print('suspended...')
+                self.logger.info('suspended...')
 
         if self.state == SuspendState.Suspend:
             # wait until resumed

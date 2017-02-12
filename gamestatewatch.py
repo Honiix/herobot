@@ -1,6 +1,7 @@
 import threading
 # import Queue
 import copy
+import logging
 
 from time import *
 # from timeit import timing
@@ -18,6 +19,7 @@ class GameStateWatcher:
         t = threading.Thread(target=self.watchThread)
         t.daemon = True
         t.start()
+        self.logger = logging.getLogger('herobot.gamestatewatch')
 
     def watchThread(self):
         while True:
@@ -31,7 +33,7 @@ class GameStateWatcher:
 
     def getlevel(self):
         raw = self.window.grabocr(697, 81, 260, 32)
-        # print('read: ' + raw)
+        self.logger.debug('getlevel read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:
             return int(num)
@@ -40,7 +42,7 @@ class GameStateWatcher:
 
     def getmoney(self):
         raw = self.window.grabocr(100, 18, 400, 42)
-        # print('read: ' + raw)
+        self.logger.debug('getmoney read: "{}"'.format(raw))
         raw = raw.replace(' ', '')
         try:
             val = float(raw)
@@ -50,7 +52,7 @@ class GameStateWatcher:
 
     def getsoulscurrent(self):
         raw = self.window.grabocr(363, 130, 190, 20)
-        # print('read: ' + raw)
+        self.logger.debug('getsoulscurrent read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:
             return int(num)
@@ -59,7 +61,7 @@ class GameStateWatcher:
 
     def getsoulsnext(self):
         raw = self.window.grabocr(363, 150, 190, 20)
-        # print('read: ' + raw)
+        self.logger.debug('getsoulsnext read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:
             return int(num)

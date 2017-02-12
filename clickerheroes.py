@@ -23,14 +23,14 @@ class Heroes:
         self.window = window
         self.heroes = []
         self.loadheroes()
-        self.CID = 0
-        self.BETTY = 5
-        self.SAMURAI = 6
-        self.NATALIA = 10
-        self.MIDAS = 15
-        self.AMEN = 19
-        self.SHINO = 23
-        self.FROST = 25
+        # self.CID = 0
+        # self.BETTY = 5
+        # self.SAMURAI = 6
+        # self.NATALIA = 10
+        # self.MIDAS = 15
+        # self.AMEN = 19
+        # self.SHINO = 23
+        # self.FROST = 25
         self.logger = logging.getLogger('herobot.clickerheroes')
 
     def loadheroes(self):

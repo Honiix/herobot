@@ -1,4 +1,5 @@
 Pillow
+pyperclip
 PyUserInput
 pyscreenshot
 pytesseract

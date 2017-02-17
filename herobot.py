@@ -4,6 +4,7 @@ from clickerheroes import Heroes
 from gamewindow import GameWindow
 from gamestatewatch import GameStateWatcher
 from display import SuspendHelper
+from savereader import grabsave
 
 from time import *
 # from enum import Enum
@@ -27,6 +28,9 @@ sleep(1)
 # print(str(cid.x))
 # h.upgradeall200(2)
 # w.useskills()
+
+w.clicksave()
+savegame = grabsave()
 
 while True:
     state = watch.readState()

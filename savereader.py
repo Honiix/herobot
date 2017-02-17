@@ -2,14 +2,17 @@ import base64
 import json
 import pyperclip
 
-raw = pyperclip.paste()
-save = raw.split("Fe12NAfA3R6z4k0z")[0]
-save_json_base64 = ''.join([char for char in save[::2]])
-save_json = base64.b64decode(save_json_base64).decode('UTF-8')
-# print(json.dumps(json.loads(save_json), sort_keys=True, indent=4))
-savegame = json.loads(save_json)
+
+def grabsave():
+    raw = pyperclip.paste()
+    save = raw.split("Fe12NAfA3R6z4k0z")[0]
+    save_json_base64 = ''.join([char for char in save[::2]])
+    save_json = base64.b64decode(save_json_base64).decode('UTF-8')
+    # print(json.dumps(json.loads(save_json), sort_keys=True, indent=4))
+    return json.loads(save_json)
 
 # print(savegame['rubies'])
+
 
 """
 Usefull info :

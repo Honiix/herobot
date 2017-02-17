@@ -225,3 +225,9 @@ class GameWindow:
         self.keyboard.tap_key('5')
         self.keyboard.tap_key('6')
         self.keyboard.tap_key('7')
+
+    def clicksave(self):
+        self.slowclick(self.winx + 1116, self.winy + 26)  # Click on wrench
+        self.slowclick(self.winx + 278, self.winy + 78)   # Click on Save
+        self.keyboard.press_key(self.keyboard.escape_key)
+        self.slowclick(self.winx + 947, self.winy + 31)  # Click on close

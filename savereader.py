@@ -3,7 +3,7 @@ import json
 import pyperclip
 
 
-def grabsave():
+def extract_save_from_clipboard():
     raw = pyperclip.paste()
     save = raw.split("Fe12NAfA3R6z4k0z")[0]
     save_json_base64 = ''.join([char for char in save[::2]])

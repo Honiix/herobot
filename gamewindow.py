@@ -5,9 +5,10 @@ import cv2
 from pymouse import PyMouse
 from pykeyboard import PyKeyboard
 import numpy as np
-from time import *
+from time import sleep
 from timeit import timing
 import logging
+from savereader import extract_save_from_clipboard
 
 scrollPages = 10
 pageScrollClicks = 5
@@ -226,8 +227,14 @@ class GameWindow:
         self.keyboard.tap_key('6')
         self.keyboard.tap_key('7')
 
-    def clicksave(self):
+    def grabsave(self):
         self.slowclick(self.winx + 1116, self.winy + 26)  # Click on wrench
         self.slowclick(self.winx + 278, self.winy + 78)   # Click on Save
+        sleep(0.2)
         self.keyboard.press_key(self.keyboard.escape_key)
-        self.slowclick(self.winx + 947, self.winy + 31)  # Click on close
+        sleep(0.2)
+        # self.findimg(self.progimg, self.winx + 945, self.winy + 29, 40, 40)
+        self.slowclick(self.winx + 945, self.winy + 29)  # Click on close
+        sleep(0.2)
+        self.slowclick(self.winx + 945, self.winy + 29)  # Click on close again in case windows wasn't active
+        return extract_save_from_clipboard()

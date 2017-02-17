@@ -2,11 +2,10 @@
 
 from clickerheroes import Heroes
 from gamewindow import GameWindow
-from gamestatewatch import GameStateWatcher
+# from gamestatewatch import GameStateWatcher
 from display import SuspendHelper
-from savereader import grabsave
 
-from time import *
+from time import sleep
 # from enum import Enum
 import logging
 import logging.config
@@ -19,7 +18,7 @@ sleep(1)
 hh = SuspendHelper()
 w = GameWindow(hh.process)
 h = Heroes(hh.process, w)
-watch = GameStateWatcher(w)
+# watch = GameStateWatcher(w)
 
 # wait for game state to update
 sleep(1)
@@ -29,13 +28,10 @@ sleep(1)
 # h.upgradeall200(2)
 # w.useskills()
 
-w.clicksave()
-savegame = grabsave()
-
 while True:
-    state = watch.readState()
-    logger.debug('readState level: %s' % state.level)
-    if state.level == 1:
+    savegame = w.grabsave()
+    logger.debug('Current level: %s' % savegame['currentZoneHeight'])
+    if savegame['currentZoneHeight'] == 1:
         cid, level = w.findhero(h.heroes[h.CID])
         if cid is not None and level < 200:
             w.levelup100(cid)
@@ -46,49 +42,55 @@ while True:
         else:
             logger.info('Could not find Cid')
 
-    if state.level >= 1 and state.level < 100:
-        while state.level < 100:
-            w.clickmonster(500)
+    if savegame['currentZoneHeight'] >= 1 and savegame['currentZoneHeight'] < 100:
+        lastlevel = savegame['currentZoneHeight']
+        while savegame['currentZoneHeight'] < 100:
+            logger.debug('lastlevel: {}, currentlevel: {}'.format(lastlevel, savegame['currentZoneHeight']))
             hero = h.getbutlastvisiblehero()
             if hero is not None:
                 w.levelup100(hero)
-                state = watch.readState()
-                w.useskills()
-                w.checkprog()
+                savegame = w.grabsave()
+                lastlevel = savegame['currentZoneHeight']
+                logger.debug('Current level: %s' % savegame['currentZoneHeight'])
             else:
                 logger.info('Could not find before last hero')
+            w.useskills()
+            w.checkprog()
+            w.clickmonster(1500)
 
-    if state.level >= 100 and state.level < 200:
+    if savegame['currentZoneHeight'] >= 100 and savegame['currentZoneHeight'] < 200:
         h.upgradeall200(19)
 
-        while state.level < 200:
+        while savegame['currentZoneHeight'] < 200:
             w.clickmonster(500)
             hero = h.getbutlastvisiblehero()
             if hero is not None:
                 w.levelup100(hero)
-                state = watch.readState()
+                savegame = w.grabsave()
+                logger.debug('Current level: %s' % savegame['currentZoneHeight'])
                 w.useskills()
                 w.checkprog()
             else:
                 logger.info('Could not find before last hero')
 
     # now go with samurai
-    if state.level >= 200 and state.level < 1401:
+    if savegame['currentZoneHeight'] >= 200 and savegame['currentZoneHeight'] < 1401:
         h.upgradeall200(25)
 
-        while state.level < 1401:
+        while savegame['currentZoneHeight'] < 1401:
             w.clickmonster(1000)
             samurai, _ = w.findhero(h.heroes[h.SAMURAI])
             if samurai is not None:
                 w.levelup100(samurai)
-                state = watch.readState()
+                savegame = w.grabsave()
+                logger.debug('Current level: %s' % savegame['currentZoneHeight'])
                 w.useskills()
                 w.checkprog()
             else:
                 logger.info('Could not find Samurai')
 
     # ascend
-    if state.level >= 1401:
+    if savegame['currentZoneHeight'] >= 1401:
         amen, _ = w.findhero(h.heroes[h.AMEN])
         if amen is not None:
             w.upgrade(amen, 3)

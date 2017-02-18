@@ -44,6 +44,7 @@ while True:
 
     if savegame['currentZoneHeight'] >= 1 and savegame['currentZoneHeight'] < 100:
         lastlevel = savegame['currentZoneHeight']
+        waitloop = 3
         while savegame['currentZoneHeight'] < 100:
             logger.debug('lastlevel: {}, currentlevel: {}'.format(lastlevel, savegame['currentZoneHeight']))
             hero = h.getbutlastvisiblehero()
@@ -54,8 +55,12 @@ while True:
                 logger.debug('Current level: %s' % savegame['currentZoneHeight'])
             else:
                 logger.info('Could not find before last hero')
-            w.useskills()
-            w.checkprog()
+
+            if lastlevel >= savegame['currentZoneHeight'] and waitloop == 0:
+                w.useskills()
+                w.checkprog()
+                waitloop = 4
+            waitloop -= 1
             w.clickmonster(1500)
 
     if savegame['currentZoneHeight'] >= 100 and savegame['currentZoneHeight'] < 200:

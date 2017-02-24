@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 from clickerheroes import Heroes
-from gamewindow import GameWindow
+# from gamewindow import GameWindow
 # from gamestatewatch import GameStateWatcher
+import gamewindowwithoutclass as w
 from display import SuspendHelper
+import savereader as sr
 
 from time import sleep
 # from enum import Enum
@@ -16,8 +18,8 @@ logger = logging.getLogger('herobot')
 sleep(1)
 
 hh = SuspendHelper()
-w = GameWindow(hh.process)
-h = Heroes(hh.process, w)
+# w = GameWindow(hh.process)
+h = Heroes(hh.process)
 # watch = GameStateWatcher(w)
 
 # wait for game state to update
@@ -28,9 +30,13 @@ sleep(1)
 # h.upgradeall200(2)
 # w.useskills()
 
+# h.getbutlastvisiblehero()
+# exit()
+
 while True:
     savegame = w.grabsave()
     logger.debug('Current level: %s' % savegame['currentZoneHeight'])
+
     if savegame['currentZoneHeight'] == 1:
         cid, level = w.findhero(h.heroes[h.CID])
         if cid is not None and level < 200:
@@ -67,7 +73,7 @@ while True:
         h.upgradeall200(19)
 
         while savegame['currentZoneHeight'] < 200:
-            w.clickmonster(500)
+            w.clickmonster(1500)
             hero = h.getbutlastvisiblehero()
             if hero is not None:
                 w.levelup100(hero)

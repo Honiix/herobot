@@ -2,6 +2,7 @@ import pyscreenshot as ImageGrab
 import pytesseract
 import cv2
 # from cv2 import cv
+from multiprocessing import Pool
 from pymouse import PyMouse
 from pykeyboard import PyKeyboard
 import numpy as np
@@ -120,8 +121,8 @@ class GameWindow:
 
     def findheroimg(self, small):
         leftmargin = 160
-        topmargin = 173
-        (x, y) = self.findimg(small, self.winx + leftmargin, self.winy + topmargin, 272, 420)
+        topmargin = 383
+        (x, y) = self.findimg(small, self.winx + leftmargin, self.winy + topmargin, 272, 210)
         if x is not None:
             return (x + leftmargin, y + topmargin)
         return (None, None)
@@ -169,9 +170,27 @@ class GameWindow:
         except:
             return 0
 
-    def findvisiblehero(self, hero):
-        x, y = self.findvisibleheroname(hero)
+    def findvisiblehero(self, herorange):
+        # x, y = self.findvisibleheroname(hero)
+        x, y = self.findvisibleheroworker(herorange)
         return VisibleHero(x, y)
+
+    def callback(self, result):
+        if result:
+            self.logger.info('Hero found, stop other process')
+            self.pool.terminate()
+
+    def findvisibleheroworker(self, herorange):
+        pool = Pool()
+        for i in reversed(range(herorange)):
+            result = pool.apply_async(
+                self.findvisibleheroname,
+                args=i,
+                callback=self.callback)
+            self.logger.info('Searching for hero number {}'.format(i))
+        pool.close()
+        pool.join()
+        return result.get(timeout=10)
 
     def findhero(self, hero, scrolldownfirst=False):
         self.logger.info('searching for %s ...' % hero.name)
@@ -233,7 +252,6 @@ class GameWindow:
         sleep(0.2)
         self.keyboard.press_key(self.keyboard.escape_key)
         sleep(0.2)
-        # self.findimg(self.progimg, self.winx + 945, self.winy + 29, 40, 40)
         self.slowclick(self.winx + 945, self.winy + 29)  # Click on close
         sleep(0.2)
         self.slowclick(self.winx + 945, self.winy + 29)  # Click on close again in case windows wasn't active

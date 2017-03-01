@@ -71,6 +71,34 @@ class GameWindow:
                     pix[x, y] = 0
         return pytesseract.image_to_string(im, lang='eng')
 
+    def grabscreen(self, x, y, w, h):
+        """ Take screenshot of the specified region of gamewindow
+        Save a bmp into disk for debuging perpose. I wasn't able to copile
+        cv2 with GTK support. Hint, you can open this .bmp in Sublime Text
+        it will refresh automatically when file change.
+        """
+        im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
+        big = np.array(im)
+
+        # Debug output
+        # logger.debug('big shape: {}'.format(big.shape))
+        cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))
+
+        big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
+        return big
+
+    def grabscreenlastvisiblehero(self):
+        """ capture heroes window lower region where last available hero will be """
+        leftmargin = 160
+        topmargin = 383
+        return self.grabscreen(self.winx + leftmargin, self.winy + topmargin, 272, 210)
+
+    def grabscreenvisiblehero(self):
+        """ capture heroes window from top to almost bottom """
+        leftmargin = 160
+        topmargin = 175
+        return self.grabscreen(self.winx + leftmargin, self.winy + topmargin, 272, 350)
+
     def click(self, location, times):
         x, y = location
         for i in range(times):
@@ -170,22 +198,35 @@ class GameWindow:
         except:
             return 0
 
-    def findvisiblehero(self, herorange):
+    def findvisiblehero(self, herorange: int):
         # x, y = self.findvisibleheroname(hero)
-        x, y = self.findvisibleheroworker(herorange)
-        return VisibleHero(x, y)
+        # result = self.findvisibleheroworker(herorange)
+        # if result:
+        #     x, y = result
+        # return VisibleHero(x, y)
+
+        big = self.grabscreenlastvisiblehero()
+        try:
+            hero, x, y = self.findvisibleheroworker(herorange, big)
+        except TypeError:
+            return (None, VisibleHero(None, None))
+        else:
+            if x is not None and y is not None:
+                return (hero, VisibleHero(x, y))
+            else:
+                return (None, VisibleHero(None, None))
 
     def callback(self, result):
         if result:
             self.logger.info('Hero found, stop other process')
             self.pool.terminate()
 
-    def findvisibleheroworker(self, herorange):
+    def findvisibleheroworker(self, herorange: int):
         pool = Pool()
         for i in reversed(range(herorange)):
             result = pool.apply_async(
                 self.findvisibleheroname,
-                args=i,
+                args=self.heroes[i],
                 callback=self.callback)
             self.logger.info('Searching for hero number {}'.format(i))
         pool.close()
@@ -246,7 +287,7 @@ class GameWindow:
         self.keyboard.tap_key('6')
         self.keyboard.tap_key('7')
 
-    def grabsave(self):
+    def grabsave(self) -> dict:
         self.slowclick(self.winx + 1116, self.winy + 26)  # Click on wrench
         self.slowclick(self.winx + 278, self.winy + 78)   # Click on Save
         sleep(0.2)

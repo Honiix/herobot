@@ -53,6 +53,7 @@ logger.info('Window found at {}; {}'.format(str(winx), str(winy)))
 
 # @timing
 def grabocr(x, y, w, h):
+    """ Translate picture to text """
     x = winx + x
     y = winy + y
     im = ImageGrab.grab(bbox=(x, y, x + w, y + h)).convert('RGB')
@@ -97,6 +98,11 @@ def scrollpagedown():
 
 
 def grabscreen(x, y, w, h):
+    """ Take screenshot of the specified region of gamewindow
+    Save a bmp into disk for debuging perpose. I wasn't able to copile
+    cv2 with GTK support. Hint, you can open this .bmp in Sublime Text
+    it will refresh automatically when file change.
+    """
     im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
     big = np.array(im)
 
@@ -108,17 +114,23 @@ def grabscreen(x, y, w, h):
     return big
 
 
+def grabscreenlastvisiblehero():
+    """ capture heroes window lower region where last available hero will be """
+    leftmargin = 160
+    topmargin = 383
+    return grabscreen(winx + leftmargin, winy + topmargin, 272, 210)
+
+
+def grabscreenvisiblehero():
+    """ capture heroes window from top to almost bottom """
+    leftmargin = 160
+    topmargin = 175
+    return grabscreen(winx + leftmargin, winy + topmargin, 272, 350)
+
+
 # @timing
 def findimg(small, big):
-    # im = ImageGrab.grab(bbox=(x, y, x + w, y + h))
-    # big = np.array(im)
-
-    # # Debug output
-    # # logger.debug('big shape: {}'.format(big.shape))
-    # cv2.imwrite('tests/big.bmp', cv2.cvtColor(big, cv2.COLOR_RGB2BGR))
-
-    # big = big[:, :, ::-1].copy()  # <- IndexError: too many indices for array
-
+    """ search if small is in big """
     while True:
         try:
             r = cv2.matchTemplate(small, big, cvmethod)
@@ -136,27 +148,54 @@ def findimg(small, big):
 
 
 def findheroimg(small, big):
+    """ The hero position in the screenshot """
     (x, y) = findimg(small, big)
     if x is not None:
         return (x, y)
     return (None, None)
 
 
-def findvisibleheroname(hero, big, event):
+def findvisibleheronamemp(hero, big, event):
+    """ multiprocessing version
+    if found, return hero and his position in the screenshot
+    """
     if event.is_set():
         return
 
-    x, y = findheroimg(hero.img, big)
+    coord = findheroimg(hero.img, big)
+    if coord:
+        x, y = coord
+
     if x is None:
-        x, y = findheroimg(hero.goldimg, big)
+        coord = findheroimg(hero.goldimg, big)
+        if coord:
+            x, y = coord
+        else:
+            return
+
     if x is not None:
         event.set()
         logger.debug('{}: {},{}'.format(hero.name, x, y))
         return (hero, x, y)
 
 
+def findvisibleheroname(hero, big):
+    """ if found, return hero and his position in the screenshot """
+    x, y = findheroimg(hero.img, big)
+    if x is None:
+        x, y = findheroimg(hero.goldimg, big)
+    if x is not None:
+        logger.debug('{}: {},{}'.format(hero.name, x, y))
+        return (hero, x, y)
+
+
 def findheroname(hero, scrolldownfirst=False):
-    x, y = findvisibleheroname(hero)
+    """ From a screenshot of the portion of screen where
+    you can scroll heroes, scroll until it found the hero
+    and return his position in the screenshot
+    """
+    big = grabscreenvisiblehero()
+    hero, x, y = findvisibleheroname(hero, big)
     if x is not None:
         return (x, y)
 
@@ -164,7 +203,7 @@ def findheroname(hero, scrolldownfirst=False):
         scrolltop()
 
     for i in range(scrollPages):
-        x, y = findvisibleheroname(hero)
+        hero, x, y = findvisibleheroname(hero, big)
         if x is not None:
             return (x, y)
             break
@@ -175,7 +214,7 @@ def findheroname(hero, scrolldownfirst=False):
         scrolltop()
 
         for i in range(scrollPages):
-            x, y = findvisibleheroname(hero)
+            hero, x, y = findvisibleheroname(hero, big)
             if x is not None:
                 return (x, y)
                 break
@@ -185,6 +224,7 @@ def findheroname(hero, scrolldownfirst=False):
 
 
 def findherolevel(y):
+    """ can be remove, savegame has this information """
     raw = grabocr(312, y + 20, 121, 25)
     logger.debug('findherolevel read: "{}"'.format(raw))
     num = ''.join(ch for ch in raw if ch.isdigit())
@@ -195,28 +235,29 @@ def findherolevel(y):
 
 
 def findvisiblehero(heroes, herorange):
-    # x, y = findvisibleheroname(hero)
-    leftmargin = 160
-    topmargin = 383
-    big = grabscreen(winx + leftmargin, winy + topmargin, 272, 210)
+    """ From a screenshot of the lower portion of the windows
+    where you can scroll heroes, ask a worker to find any
+    heroes sent to it """
+    big = grabscreenlastvisiblehero()
     try:
         hero, x, y = findvisibleheroworker(heroes, herorange, big)
     except TypeError:
-        return (None, VisibleHero(None, None))
+        return
     else:
         if x is not None and y is not None:
-            return (hero, VisibleHero(x + leftmargin, y + topmargin))
+            return (hero, VisibleHero(x, y))
         else:
-            return (None, VisibleHero(None, None))
+            return
 
 
 def findvisibleheroworker(heroes, herorange, big):
+    """ worker that return all found hero into a screenshot """
     pool = Pool()
     m = Manager()
     event = m.Event()
     results = list()
     for i in reversed(range(herorange)):
-        results.append(pool.apply_async(findvisibleheroname, args=(heroes[i], big, event)))
+        results.append(pool.apply_async(findvisibleheronamemp, args=(heroes[i], big, event)))
     logger.debug('Searching for hero number {} to {}'.format(i, herorange))
     pool.close()
     event.wait(timeout=6)
@@ -232,16 +273,18 @@ def findvisibleheroworker(heroes, herorange, big):
 
 
 def findhero(hero, scrolldownfirst=False):
+    """ Find a specific hero """
     logger.info('searching for %s ...' % hero.name)
     x, y = findheroname(hero, scrolldownfirst)
     logger.debug('Found {} at {}; {}'.format(hero.name, str(x), str(y)))
     if x is not None:
-        return (VisibleHero(x, y), findherolevel(y))
+        return VisibleHero(x, y)
     else:
-        return (None, None)
+        return None
 
 
 def levelup100(visibleHero):
+    """ click into a hero location with CTRL key pressed """
     x, y = visibleHero.gethirelocation(winx, winy)
     keyboard.press_key(keyboard.control_key)
     slowclick(x, y)
@@ -249,6 +292,7 @@ def levelup100(visibleHero):
 
 
 def upgrade(visibleHero, index):
+    """ Buy a unique hero upgrade """
     x, y = visibleHero.getupgradelocation(winx, winy, index)
     slowclick(x, y)
 

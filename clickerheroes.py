@@ -8,6 +8,9 @@ import cv2
 # from multiprocessing import Pool
 import logging
 import gamewindowwithoutclass as window
+# from gamewindow import GameWindow as window
+import savereader as sr
+from exceptions import HeroNotFoundError
 
 
 class Hero:
@@ -22,7 +25,7 @@ class Hero:
 class Heroes:
     def __init__(self, suspendCallback):
         self.suspendCallback = suspendCallback
-        # self.window = window
+        self.window = window
         self.heroes = []
         self.loadheroes()
         self.CID = 0
@@ -44,9 +47,9 @@ class Heroes:
                 h = Hero(tok[0], float(tok[1]), float(tok[2]))
                 self.heroes.append(h)
 
-    def getbutlastvisiblehero(self):
+    def lastavailablehero(self, savegame):
         self.logger.info('searching for last visible hero...')
-        window.scrollbottom()
+        # window.scrollbottom()
 
         # w = Worker(self.window, self.heroes)
         # h = w.searchhero()
@@ -60,24 +63,40 @@ class Heroes:
         #         return h
         #     else:
         #         self.logger.info('%s not visible' % self.heroes[i].name)
-        hero, visible_hero = window.findvisiblehero(self.heroes, 27)
-        self.logger.info('{} is last available... '.format(hero.name))
-        return visible_hero
+        # hero, visible_hero = window.findvisiblehero(self.heroes, 27)
+        last_id = sr.last_available_hero_id(savegame)
+        result = window.findvisiblehero(self.heroes, last_id)
+        if result:
+            hero, visible_hero = result
+            self.logger.info(f'{hero.name} is last available... ')
+            return visible_hero
+        else:
+            raise HeroNotFoundError
 
-    def upgradeall200(self, upto):
+    def upgradeall200(self, savegame, upto):
+        hc = sr.getherocollection(savegame)
         for i in range(upto):
-            visibleHero, level = window.findhero(self.heroes[i], scrolldownfirst=True)
-            if visibleHero is not None and level < 200:
-                window.levelup100(visibleHero)
-                window.levelup100(visibleHero)
-                if i != self.AMEN:
-                    for j in range(7):
-                        window.upgrade(visibleHero, j)
+
+            currenthero = hc.get(str(i))
+            if currenthero is None:
+                self.logger.info('Hero not found in the savegame {}'.format(currenthero))
+                break
+
+            if currenthero.get('level') < 200:
+                visibleHero = window.findhero(self.heroes[i], scrolldownfirst=True)
+                if visibleHero is not None:
+                    window.levelup100(visibleHero)
+                    window.levelup100(visibleHero)
+                    if i != self.AMEN:
+                        for j in range(7):
+                            window.upgrade(visibleHero, j)
+                    else:
+                        for j in range(3):
+                            window.upgrade(visibleHero, j)
                 else:
-                    for j in range(3):
-                        window.upgrade(visibleHero, j)
+                    self.logger.info('Couldn\'t upgrade hero number {}'.format(i))
             else:
-                self.logger.info('Couldn\'t upgrade hero number {}'.format(i))
+                self.logger.debug('hero {} was already level 200+'.format(i))
 
 
 # class Worker():

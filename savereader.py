@@ -1,9 +1,12 @@
 import base64
 import json
 import pyperclip
+import logging
+
+logger = logging.getLogger('herobot.savereader')
 
 
-def extract_save_from_clipboard():
+def extract_save_from_clipboard() -> dict:
     raw = pyperclip.paste()
     save = raw.split("Fe12NAfA3R6z4k0z")[0]
     save_json_base64 = ''.join([char for char in save[::2]])
@@ -11,13 +14,29 @@ def extract_save_from_clipboard():
     # print(json.dumps(json.loads(save_json), sort_keys=True, indent=4))
     return json.loads(save_json)
 
+
+def last_available_hero_id(savegame) -> int:
+    heroes = getherocollection(savegame)
+    heroes_available = {k: v for k, v in heroes.items() if v['locked'] is False}
+    return max(heroes_available.keys(), key=int)
+
+
+def getherocollection(savegame):
+    hc = savegame.get('heroCollection')
+    if not hc:
+        logger.error('heroCollection not found')
+        return
+    return hc.get('heroes')
+
 # print(savegame['rubies'])
 
 
 """
 Usefull info :
+    heroSouls
     currentZoneHeight
     gold
+    autoclickers
     heroCollection {}
     highestFinishedZone
     readPatchNumber

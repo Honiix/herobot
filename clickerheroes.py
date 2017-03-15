@@ -9,15 +9,15 @@ import cv2
 import logging
 import gamewindowwithoutclass as window
 # from gamewindow import GameWindow as window
-import savereader as sr
-from exceptions import HeroNotFoundError
+# import savereader as sr
+# from exceptions import HeroNotFoundError
 
 
 class Hero:
     def __init__(self, name, price, dps):
         self.name = name
-        self.img = cv2.imread('img/%s/%s.png' % (name, name))
-        self.goldimg = cv2.imread('img/%s/%sgold.png' % (name, name))
+        self.img = cv2.imread(f'img/{name}/{name}.png')
+        self.goldimg = cv2.imread(f'img/{name}/{name}gold.png')
         self.price = price
         self.dps = dps
 
@@ -27,18 +27,18 @@ class Heroes:
         self.suspendCallback = suspendCallback
         self.window = window
         self.heroes = []
-        self.loadheroes()
-        self.CID = 0
-        self.BETTY = 5
-        self.SAMURAI = 6
-        self.NATALIA = 10
-        self.MIDAS = 15
-        self.AMEN = 19
-        self.SHINO = 23
-        self.FROST = 25
+        self.load_heroes()
+        self.CID = 0 + 1
+        self.BETTY = 5 + 1
+        self.SAMURAI = 6 + 1
+        self.NATALIA = 10 + 1
+        self.MIDAS = 15 + 1
+        self.AMEN = 19 + 1
+        self.SHINO = 23 + 1
+        self.FROST = 25 + 1
         self.logger = logging.getLogger('herobot.clickerheroes')
 
-    def loadheroes(self):
+    def load_heroes(self):
         with open('heroes.txt', 'r') as f:
             for l in f.read().split('\n'):
                 if len(l) == 0:
@@ -47,9 +47,9 @@ class Heroes:
                 h = Hero(tok[0], float(tok[1]), float(tok[2]))
                 self.heroes.append(h)
 
-    def lastavailablehero(self, savegame):
+    def last_available_hero(self, savereader):
         self.logger.info('searching for last visible hero...')
-        # window.scrollbottom()
+        # window.scroll_bottom()
 
         # w = Worker(self.window, self.heroes)
         # h = w.searchhero()
@@ -64,17 +64,16 @@ class Heroes:
         #     else:
         #         self.logger.info('%s not visible' % self.heroes[i].name)
         # hero, visible_hero = window.findvisiblehero(self.heroes, 27)
-        last_id = sr.last_available_hero_id(savegame)
-        result = window.findvisiblehero(self.heroes, last_id)
-        if result:
-            hero, visible_hero = result
-            self.logger.info(f'{hero.name} is last available... ')
-            return visible_hero
-        else:
-            raise HeroNotFoundError
+        last_id = savereader.last_available_hero_id
+        last_available_hero = self.heroes[last_id - 1]
 
-    def upgradeall200(self, savegame, upto):
-        hc = sr.getherocollection(savegame)
+        visible_hero = window.find_hero(last_available_hero, True)
+
+        self.logger.info(f'{last_available_hero.name} is last available... ')
+        return last_available_hero, visible_hero
+
+    def upgrade_all_200(self, savereader, upto):
+        hc = savereader.hero_collection
         for i in range(upto):
 
             currenthero = hc.get(str(i))
@@ -83,10 +82,10 @@ class Heroes:
                 break
 
             if currenthero.get('level') < 200:
-                visibleHero = window.findhero(self.heroes[i], scrolldownfirst=True)
+                visibleHero = window.find_hero(self.heroes[i], scrolldownfirst=True)
                 if visibleHero is not None:
-                    window.levelup100(visibleHero)
-                    window.levelup100(visibleHero)
+                    window.level_up_100(visibleHero)
+                    window.level_up_100(visibleHero)
                     if i != self.AMEN:
                         for j in range(7):
                             window.upgrade(visibleHero, j)

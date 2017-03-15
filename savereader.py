@@ -6,6 +6,14 @@ import logging
 logger = logging.getLogger('herobot.savereader')
 
 
+class SaveReader():
+
+    def __init__(self):
+        self.savegame = extract_save_from_clipboard()
+        self.hero_collection = get_hero_collection(self.savegame)
+        self.last_available_hero_id = get_last_available_hero_id(self.savegame)
+
+
 def extract_save_from_clipboard() -> dict:
     raw = pyperclip.paste()
     save = raw.split("Fe12NAfA3R6z4k0z")[0]
@@ -15,17 +23,17 @@ def extract_save_from_clipboard() -> dict:
     return json.loads(save_json)
 
 
-def last_available_hero_id(savegame) -> int:
-    heroes = getherocollection(savegame)
+def get_last_available_hero_id(savegame: dict) -> int:
+    heroes = get_hero_collection(savegame)
     heroes_available = {k: v for k, v in heroes.items() if v['locked'] is False}
-    return max(heroes_available.keys(), key=int)
+    return int(max(heroes_available.keys(), key=int))
 
 
-def getherocollection(savegame):
+def get_hero_collection(savegame: dict) -> dict:
     hc = savegame.get('heroCollection')
     if not hc:
         logger.error('heroCollection not found')
-        return
+        return {'heroes': {}}
     return hc.get('heroes')
 
 # print(savegame['rubies'])

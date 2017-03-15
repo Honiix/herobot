@@ -16,12 +16,12 @@ class GameStateWatcher:
         self.window = window
         self.lock = threading.Lock()
         self.state = GameState()
-        t = threading.Thread(target=self.watchThread)
+        t = threading.Thread(target=self.watch_thread)
         t.daemon = True
         t.start()
         self.logger = logging.getLogger('herobot.gamestatewatch')
 
-    def watchThread(self):
+    def watch_thread(self):
         while True:
             self.lock.acquire()
             # self.state.level = self.getlevel()
@@ -32,7 +32,7 @@ class GameStateWatcher:
             sleep(2)
 
     # def getlevel(self):
-    #     raw = self.window.grabocr(882, 81, 134, 27)
+    #     raw = self.window.grab_ocr(882, 81, 134, 27)
     #     self.logger.debug('getlevel read: "{}"'.format(raw))
     #     num = ''.join(ch for ch in raw if ch.isdigit())
     #     try:
@@ -41,7 +41,7 @@ class GameStateWatcher:
     #         return 0
 
     # def getmoney(self):
-    #     raw = self.window.grabocr(100, 18, 400, 42)
+    #     raw = self.window.grab_ocr(100, 18, 400, 42)
     #     self.logger.debug('getmoney read: "{}"'.format(raw))
     #     raw = raw.replace(' ', '')
     #     try:
@@ -51,7 +51,7 @@ class GameStateWatcher:
     #         return 0
 
     def getsoulscurrent(self):
-        raw = self.window.grabocr(363, 130, 190, 20)
+        raw = self.window.grab_ocr(363, 130, 190, 20)
         self.logger.debug('getsoulscurrent read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:
@@ -60,7 +60,7 @@ class GameStateWatcher:
             return 0
 
     def getsoulsnext(self):
-        raw = self.window.grabocr(363, 150, 190, 20)
+        raw = self.window.grab_ocr(363, 150, 190, 20)
         self.logger.debug('getsoulsnext read: "{}"'.format(raw))
         num = ''.join(ch for ch in raw if ch.isdigit())
         try:

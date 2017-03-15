@@ -20,81 +20,86 @@ h = Heroes(hh.process)
 # wait for game state to update
 sleep(1)
 
-# cid, _ = w.findhero(h.heroes[h.CID])
+# cid = w.find_hero(h.heroes[h.CID])
 # print(str(cid.x))
-# h.upgradeall200(2)
-# w.useskills()
+# h.upgrade_all_200(2)
+# w.use_skills()
 
-# h.lastavailablehero()
+# h.last_available_hero()
 # exit()
 
-while True:
-    savegame = w.grabsave()
-    logger.debug('Current level: %s' % savegame['currentZoneHeight'])
 
-    if savegame['currentZoneHeight'] == 1:
-        cid, level = w.findhero(h.heroes[h.CID])
-        if cid is not None and level < 200:
-            w.levelup100(cid)
-            w.levelup100(cid)
+while True:
+    savereader = w.grabsave()
+    logger.debug('Current level: %s' % savereader.savegame['currentZoneHeight'])
+
+    if savereader.savegame['currentZoneHeight'] == 1:
+        heroes = savereader.hero_collection
+        cid = heroes.get(h.CID)
+        cid_obj = w.find_hero(h.heroes[h.CID])
+        if cid.get('level') < 200:
+            w.level_up_100(cid_obj)
+            w.level_up_100(cid_obj)
             for i in range(7):
-                w.upgrade(cid, i)
-            w.checkprog()
+                w.upgrade(cid_obj, i)
+            w.check_prog()
         else:
             logger.info('Could not find Cid')
 
-    if savegame['currentZoneHeight'] >= 1 and savegame['currentZoneHeight'] < 100:
-        lastlevel = savegame['currentZoneHeight']
+    if savereader.savegame['currentZoneHeight'] >= 1 and savereader.savegame['currentZoneHeight'] < 100:
+        lastlevel = savereader.savegame['currentZoneHeight']
         waitloop = 3
-        while savegame['currentZoneHeight'] < 100:
-            logger.debug('lastlevel: {}, currentlevel: {}'.format(lastlevel, savegame['currentZoneHeight']))
-            hero = h.lastavailablehero(savegame)
-            w.levelup100(hero)
-            savegame = w.grabsave()
-            lastlevel = savegame['currentZoneHeight']
-            logger.debug('Current level: %s' % savegame['currentZoneHeight'])
+        while savereader.savegame['currentZoneHeight'] < 100:
+            logger.debug('lastlevel: {}, currentlevel: {}'.format(lastlevel, savereader.savegame['currentZoneHeight']))
+            hero, visible_hero = h.last_available_hero(savereader)
+            logger.debug(f'Leveling up {hero.name} by 100')
+            w.level_up_100(visible_hero)
 
-            if lastlevel >= savegame['currentZoneHeight'] and waitloop == 0:
-                w.useskills()
-                w.checkprog()
+            logger.info('waiting 1 minute...')
+            sleep(60)
+
+            savereader = w.grabsave()
+
+            if lastlevel >= savereader.savegame['currentZoneHeight'] and waitloop == 0:
+                w.use_skills()
+                w.check_prog()
                 waitloop = 4
             waitloop -= 1
-            # w.clickmonster(1500)
+            # w.click_monster(1500)
 
-    if savegame['currentZoneHeight'] >= 100 and savegame['currentZoneHeight'] < 200:
-        h.upgradeall200(savegame, 19)
+    if savereader.savegame['currentZoneHeight'] >= 100 and savereader.savegame['currentZoneHeight'] < 200:
+        h.upgrade_all_200(savereader, 19)
 
-        while savegame['currentZoneHeight'] < 200:
-            # w.clickmonster(1500)
-            hero = h.lastavailablehero(savegame)
-            w.levelup100(hero)
-            savegame = w.grabsave()
-            logger.debug('Current level: %s' % savegame['currentZoneHeight'])
-            sleep(10)
-
+        while savereader.savegame['currentZoneHeight'] < 200:
+            # w.click_monster(1500)
+            hero, visible_hero = h.last_available_hero(savereader)
+            w.level_up_100(visible_hero)
+            savereader = w.grabsave()
+            logger.debug('Current level: %s' % savereader.savegame['currentZoneHeight'])
+            sleep(20)
 
     # now go with samurai
-    if savegame['currentZoneHeight'] >= 200 and savegame['currentZoneHeight'] < 1401:
-        h.upgradeall200(savegame, 25)
+    if savereader.savegame['currentZoneHeight'] >= 200 and savereader.savegame['currentZoneHeight'] < 1401:
+        h.upgrade_all_200(savereader, 25)
 
-        while savegame['currentZoneHeight'] < 1401:
-            # w.clickmonster(1000)
-            samurai, _ = w.findhero(h.heroes[h.SAMURAI])
+        while savereader.savegame['currentZoneHeight'] < 1401:
+            # w.click_monster(1000)
+            samurai = w.find_hero(h.heroes[h.SAMURAI])
             if samurai is not None:
-                w.levelup100(samurai)
-                savegame = w.grabsave()
-                logger.debug('Current level: %s' % savegame['currentZoneHeight'])
-                w.useskills()
-                w.checkprog()
+                w.level_up_100(samurai)
+                savereader = w.grabsave()
+                logger.debug('Current level: %s' % savereader.savegame['currentZoneHeight'])
+                w.use_skills()
+                w.check_prog()
             else:
                 logger.info('Could not find Samurai')
 
     # ascend
-    if savegame['currentZoneHeight'] >= 1401:
-        amen, _ = w.findhero(h.heroes[h.AMEN])
+    if savereader.savegame['currentZoneHeight'] >= 1401:
+        amen = w.find_hero(h.heroes[h.AMEN])
         if amen is not None:
             w.upgrade(amen, 3)
-            w.ascendConfirm()
+            w.ascend_confirm()
 
             # wait for state update
             sleep(5)
